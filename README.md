@@ -1,1 +1,1 @@
-Repóstorio criado para entrega de atividades da disciplina de DSI.
+# Repóstorio criado para entrega de atividades da disciplina de DSI.
