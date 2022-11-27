@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
       title: 'Startup Name Generator',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: Color.fromARGB(255, 70, 2, 61),
+          foregroundColor: Color.fromARGB(255, 255, 255, 255),
         ),
       ),
       home: const RandomWords(),
@@ -64,7 +64,7 @@ class _RandomWordsState extends State<RandomWords> {
             ),
             trailing: Icon(
               alreadySaved ? Icons.favorite : Icons.favorite_border,
-              color: alreadySaved ? Colors.red : null,
+              color: alreadySaved ? Color.fromARGB(255, 70, 2, 61) : null,
               semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
             ),
             onTap: () {
