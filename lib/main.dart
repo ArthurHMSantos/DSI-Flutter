@@ -14,13 +14,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Statup name generator',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const RandomWords(),
+          '/second': (context) => const EditScreen(),
+        },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             appBarTheme: const AppBarTheme(
           backgroundColor: Color.fromARGB(255, 70, 2, 61),
           foregroundColor: Color.fromARGB(255, 255, 255, 255),
-        )),
-        home: const RandomWords());
+        )));
   }
 }
 
@@ -77,7 +81,10 @@ class _RandomWordsState extends State<RandomWords> {
       ),
       body: switchMode
           ? CardMode(
-              suggestions: _suggestions, saved: _saved, biggerFont: _biggerFont)
+              suggestions: _suggestions,
+              saved: _saved,
+              biggerFont: _biggerFont,
+            )
           : DefaultMode(
               suggestions: _suggestions,
               saved: _saved,
@@ -90,6 +97,36 @@ class _RandomWordsState extends State<RandomWords> {
         },
         backgroundColor: const Color.fromARGB(255, 70, 2, 61),
         child: const Icon(Icons.swap_horiz),
+      ),
+    );
+  }
+}
+
+class EditScreen extends StatefulWidget {
+  const EditScreen({super.key});
+
+  @override
+  State<EditScreen> createState() => _EditScreenState();
+}
+
+class _EditScreenState extends State<EditScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Screen'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 70, 2, 61),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            // Navigate back to first screen when tapped.
+          },
+          child: const Text('Go back!', style: TextStyle(fontSize: 20)),
+        ),
       ),
     );
   }

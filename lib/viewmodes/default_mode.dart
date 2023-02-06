@@ -31,7 +31,9 @@ class _DefaultModeState extends State<DefaultMode> {
         final alreadySaved = widget.saved.contains(widget.suggestions[index]);
 
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, '/second');
+          },
           child: ListTile(
             title: Text(
               wordPair.asPascalCase,
