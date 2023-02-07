@@ -81,14 +81,15 @@ class _RandomWordsState extends State<RandomWords> {
       ),
       body: switchMode
           ? CardMode(
-              suggestions: _suggestions,
-              saved: _saved,
+              repository: WordRepository(),
               biggerFont: _biggerFont,
+              saved: _saved,
             )
           : DefaultMode(
-              suggestions: _suggestions,
               saved: _saved,
-              biggerFont: _biggerFont),
+              biggerFont: _biggerFont,
+              repository: WordRepository(),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -130,4 +131,36 @@ class _EditScreenState extends State<EditScreen> {
       ),
     );
   }
+}
+
+class Word {
+  final String word1;
+  final String word2;
+
+  Word({required this.word1, required this.word2});
+}
+
+class WordRepository {
+  final List<Word> words = [
+    Word(word1: "Palavra", word2: " 1"),
+    Word(word1: "Palavra", word2: " 2"),
+    Word(word1: "Palavra", word2: " 3"),
+    Word(word1: "Palavra", word2: " 4"),
+    Word(word1: "Palavra", word2: " 5"),
+    Word(word1: "Palavra", word2: " 6"),
+    Word(word1: "Palavra", word2: " 7"),
+    Word(word1: "Palavra", word2: " 8"),
+    Word(word1: "Palavra", word2: " 9"),
+    Word(word1: "Palavra", word2: " 10"),
+    Word(word1: "Palavra", word2: " 11"),
+    Word(word1: "Palavra", word2: " 12"),
+    Word(word1: "Palavra", word2: " 13"),
+    Word(word1: "Palavra", word2: " 14"),
+    Word(word1: "Palavra", word2: " 15"),
+    Word(word1: "Palavra", word2: " 16"),
+    Word(word1: "Palavra", word2: " 17"),
+    Word(word1: "Palavra", word2: " 18"),
+    Word(word1: "Palavra", word2: " 19"),
+    Word(word1: "Palavra", word2: " 20"),
+  ];
 }

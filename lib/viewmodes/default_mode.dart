@@ -1,13 +1,15 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class DefaultMode extends StatefulWidget {
-  final List<WordPair> suggestions;
+  final WordRepository repository;
   final Set<WordPair> saved;
   final TextStyle biggerFont;
   const DefaultMode(
       {super.key,
-      required this.suggestions,
+      required this.repository,
       required this.saved,
       required this.biggerFont});
 
@@ -20,15 +22,11 @@ class _DefaultModeState extends State<DefaultMode> {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
+      itemCount: 20,
       itemBuilder: (context, i) {
-        if (i.isOdd) return const Divider();
-
-        final index = i ~/ 2;
-        if (index >= widget.suggestions.length) {
-          widget.suggestions.addAll(generateWordPairs().take(10));
-        }
-        final wordPair = widget.suggestions[index];
-        final alreadySaved = widget.saved.contains(widget.suggestions[index]);
+        final word = widget.repository.words[i];
+        final wordPair = WordPair(word.word1, word.word2);
+        final alreadySaved = widget.saved.contains(wordPair);
 
         return GestureDetector(
           onTap: () {

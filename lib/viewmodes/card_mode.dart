@@ -1,15 +1,17 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class CardMode extends StatefulWidget {
-  final List<WordPair> suggestions;
-  final Set<WordPair> saved;
+  final WordRepository repository;
   final TextStyle biggerFont;
+  final Set<WordPair> saved;
   const CardMode({
     super.key,
-    required this.suggestions,
-    required this.saved,
+    required this.repository,
     required this.biggerFont,
+    required this.saved,
   });
 
   @override
@@ -21,9 +23,11 @@ class _CardModeState extends State<CardMode> {
   Widget build(BuildContext context) {
     return GridView.count(
       crossAxisCount: 2,
-      children: List.generate(widget.suggestions.length, (index) {
-        final pair = widget.suggestions[index];
-        final alreadySaved = widget.saved.contains(pair);
+      children: List.generate(20, (index) {
+        final word = widget.repository.words[index];
+        final wordPair = WordPair(word.word1, word.word2);
+        final alreadySaved = widget.saved.contains(wordPair);
+
         return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, '/second');
@@ -37,7 +41,7 @@ class _CardModeState extends State<CardMode> {
                 children: [
                   ListTile(
                     title: Text(
-                      pair.asPascalCase,
+                      wordPair.asPascalCase,
                       style: widget.biggerFont,
                     ),
                     trailing: IconButton(
@@ -51,9 +55,9 @@ class _CardModeState extends State<CardMode> {
                       onPressed: () {
                         setState(() {
                           if (alreadySaved) {
-                            widget.saved.remove(pair);
+                            widget.saved.remove(wordPair);
                           } else {
-                            widget.saved.add(pair);
+                            widget.saved.add(wordPair);
                           }
                         });
                       },
