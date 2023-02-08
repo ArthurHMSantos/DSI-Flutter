@@ -1,4 +1,3 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -6,7 +5,7 @@ import '../main.dart';
 class CardMode extends StatefulWidget {
   final WordRepository repository;
   final TextStyle biggerFont;
-  final Set<WordPair> saved;
+  final Set<String> saved;
   const CardMode({
     super.key,
     required this.repository,
@@ -25,12 +24,12 @@ class _CardModeState extends State<CardMode> {
       crossAxisCount: 2,
       children: List.generate(20, (index) {
         final word = widget.repository.words[index];
-        final wordPair = WordPair(word.word1, word.word2);
-        final alreadySaved = widget.saved.contains(wordPair);
+        final alreadySaved = widget.saved.contains(word.word1);
 
         return GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/second');
+            Navigator.pushNamed(context, '/second',
+                arguments: PassedArgs(nome: word.word1, id: index));
           },
           child: Card(
             child: SizedBox(
@@ -41,7 +40,7 @@ class _CardModeState extends State<CardMode> {
                 children: [
                   ListTile(
                     title: Text(
-                      wordPair.asPascalCase,
+                      word.word1,
                       style: widget.biggerFont,
                     ),
                     trailing: IconButton(
@@ -55,9 +54,9 @@ class _CardModeState extends State<CardMode> {
                       onPressed: () {
                         setState(() {
                           if (alreadySaved) {
-                            widget.saved.remove(wordPair);
+                            widget.saved.remove(word.word1);
                           } else {
-                            widget.saved.add(wordPair);
+                            widget.saved.add(word.word1);
                           }
                         });
                       },

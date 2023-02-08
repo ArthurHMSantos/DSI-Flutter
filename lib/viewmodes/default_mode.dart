@@ -1,11 +1,10 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 
 class DefaultMode extends StatefulWidget {
   final WordRepository repository;
-  final Set<WordPair> saved;
+  final Set<String> saved;
   final TextStyle biggerFont;
   const DefaultMode(
       {super.key,
@@ -25,16 +24,16 @@ class _DefaultModeState extends State<DefaultMode> {
       itemCount: 20,
       itemBuilder: (context, i) {
         final word = widget.repository.words[i];
-        final wordPair = WordPair(word.word1, word.word2);
-        final alreadySaved = widget.saved.contains(wordPair);
+        final alreadySaved = widget.saved.contains(word.word1);
 
         return GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/second');
+            Navigator.pushNamed(context, '/second',
+                arguments: PassedArgs(nome: word.word1, id: i));
           },
           child: ListTile(
             title: Text(
-              wordPair.asPascalCase,
+              word.word1,
               style: widget.biggerFont,
             ),
             trailing: IconButton(
@@ -45,9 +44,9 @@ class _DefaultModeState extends State<DefaultMode> {
               onPressed: () {
                 setState(() {
                   if (alreadySaved) {
-                    widget.saved.remove(wordPair);
+                    widget.saved.remove(word.word1);
                   } else {
-                    widget.saved.add(wordPair);
+                    widget.saved.add(word.word1);
                   }
                 });
               },
