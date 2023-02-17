@@ -6,6 +6,59 @@ void main() {
   runApp(const MyApp());
 }
 
+class Word {
+  String word1;
+
+  Word({required this.word1});
+}
+
+class WordRepository {
+  List<Word> words = [
+    Word(word1: "Palavra 1"),
+    Word(word1: "Palavra 2"),
+    Word(word1: "Palavra 3"),
+    Word(word1: "Palavra 4"),
+    Word(word1: "Palavra 5"),
+    Word(word1: "Palavra 6"),
+    Word(word1: "Palavra 7"),
+    Word(word1: "Palavra 8"),
+    Word(word1: "Palavra 9"),
+    Word(word1: "Palavra 10"),
+    Word(word1: "Palavra 11"),
+    Word(word1: "Palavra 12"),
+    Word(word1: "Palavra 13"),
+    Word(word1: "Palavra 14"),
+    Word(word1: "Palavra 15"),
+    Word(word1: "Palavra 16"),
+    Word(word1: "Palavra 17"),
+    Word(word1: "Palavra 18"),
+    Word(word1: "Palavra 19"),
+    Word(word1: "Palavra 20"),
+  ];
+
+  updateWord(int id, String newWord) {
+    words[id].word1 = newWord;
+  }
+
+  void addWord(String word) {
+    words.add(Word(word1: word));
+  }
+}
+
+final WordRepository repository = WordRepository();
+final Set<String> saved = <String>{};
+const TextStyle biggerFont = TextStyle(fontSize: 20);
+
+class PassedArgs {
+  String nome;
+  int id;
+
+  PassedArgs({
+    required this.nome,
+    required this.id,
+  });
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -16,7 +69,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const RandomWords(),
-          '/second': (context) => const EditScreen(),
+          EditScreen.routeName: (context) => const EditScreen(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -35,18 +88,15 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
-  final _saved = <String>{};
-  final _biggerFont = const TextStyle(fontSize: 20);
   bool switchMode = false;
-
   void _pushSaved() {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (context) {
-        final tiles = _saved.map((pair) {
+        final tiles = saved.map((pair) {
           return ListTile(
             title: Text(
               pair,
-              style: _biggerFont,
+              style: biggerFont,
             ),
           );
         });
@@ -64,6 +114,95 @@ class _RandomWordsState extends State<RandomWords> {
     ));
   }
 
+  bady() {
+    if (switchMode == false) {
+      return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: repository.words.length,
+        itemBuilder: (context, i) {
+          final word = repository.words[i];
+          final alreadySaved = saved.contains(word.word1);
+
+          return ListTile(
+              title: Text(
+                word.word1,
+                style: biggerFont,
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, '/second',
+                    arguments: PassedArgs(nome: word.word1, id: i));
+              },
+              trailing: IconButton(
+                icon: alreadySaved
+                    ? const Icon(Icons.favorite)
+                    : const Icon(Icons.favorite_border),
+                color:
+                    alreadySaved ? const Color.fromARGB(255, 70, 2, 61) : null,
+                onPressed: () {
+                  setState(() {
+                    if (alreadySaved) {
+                      saved.remove(word.word1);
+                    } else {
+                      saved.add(word.word1);
+                    }
+                  });
+                },
+              ));
+        },
+      );
+    } else {
+      return GridView.count(
+        crossAxisCount: 2,
+        children: List.generate(repository.words.length, (index) {
+          final word = repository.words[index];
+          final alreadySaved = saved.contains(word.word1);
+
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/second',
+                  arguments: PassedArgs(nome: word.word1, id: index));
+            },
+            child: Card(
+              child: SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        word.word1,
+                        style: biggerFont,
+                      ),
+                      trailing: IconButton(
+                        alignment: Alignment.bottomLeft,
+                        icon: Icon(
+                          alreadySaved ? Icons.favorite : Icons.favorite_border,
+                          color: alreadySaved
+                              ? const Color.fromARGB(255, 70, 2, 61)
+                              : null,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (alreadySaved) {
+                              saved.remove(word.word1);
+                            } else {
+                              saved.add(word.word1);
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,22 +211,12 @@ class _RandomWordsState extends State<RandomWords> {
         actions: [
           IconButton(
             onPressed: _pushSaved,
-            icon: const Icon(Icons.list),
+            icon: const Icon(Icons.list_rounded),
             tooltip: "Saved suggestions",
-          )
+          ),
         ],
       ),
-      body: switchMode
-          ? CardMode(
-              repository: WordRepository(),
-              biggerFont: _biggerFont,
-              saved: _saved,
-            )
-          : DefaultMode(
-              saved: _saved,
-              biggerFont: _biggerFont,
-              repository: WordRepository(),
-            ),
+      body: bady(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -104,13 +233,14 @@ class _RandomWordsState extends State<RandomWords> {
 class EditScreen extends StatefulWidget {
   const EditScreen({super.key});
 
+  static const routeName = "/second";
+
   @override
   State<EditScreen> createState() => _EditScreenState();
 }
 
 class _EditScreenState extends State<EditScreen> {
   TextEditingController controller = TextEditingController();
-  final repository = WordRepository();
 
   onSubmit() {
     final receivedArg =
@@ -123,7 +253,18 @@ class _EditScreenState extends State<EditScreen> {
     }
 
     repository.updateWord(receivedArg.id, newWord);
-    Navigator.of(context).pop(newWord);
+    Navigator.pushNamed(context, '/');
+  }
+
+  addWord() {
+    final word = controller.text;
+
+    if (word.isEmpty) {
+      return;
+    }
+
+    repository.addWord(word);
+    Navigator.pushNamed(context, '/');
   }
 
   @override
@@ -163,53 +304,16 @@ class _EditScreenState extends State<EditScreen> {
             onPressed: onSubmit,
             child: const Text('Submit', style: TextStyle(fontSize: 20)),
           ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 70, 2, 61),
+            ),
+            onPressed: addWord,
+            child: const Text('Adicione a palavra',
+                style: TextStyle(fontSize: 20)),
+          ),
         ],
       ),
     );
   }
-}
-
-class Word {
-  String word1;
-
-  Word({required this.word1});
-}
-
-class WordRepository {
-  final List<Word> words = [
-    Word(word1: "Palavra 1"),
-    Word(word1: "Palavra 2"),
-    Word(word1: "Palavra 3"),
-    Word(word1: "Palavra 4"),
-    Word(word1: "Palavra 5"),
-    Word(word1: "Palavra 6"),
-    Word(word1: "Palavra 7"),
-    Word(word1: "Palavra 8"),
-    Word(word1: "Palavra 9"),
-    Word(word1: "Palavra 10"),
-    Word(word1: "Palavra 11"),
-    Word(word1: "Palavra 12"),
-    Word(word1: "Palavra 13"),
-    Word(word1: "Palavra 14"),
-    Word(word1: "Palavra 15"),
-    Word(word1: "Palavra 16"),
-    Word(word1: "Palavra 17"),
-    Word(word1: "Palavra 18"),
-    Word(word1: "Palavra 19"),
-    Word(word1: "Palavra 20"),
-  ];
-
-  updateWord(int id, String newWord) {
-    words[id].word1 = newWord;
-  }
-}
-
-class PassedArgs {
-  String nome;
-  int id;
-
-  PassedArgs({
-    required this.nome,
-    required this.id,
-  });
 }
