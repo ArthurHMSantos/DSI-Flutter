@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'viewmodes/card_mode.dart';
-import 'viewmodes/default_mode.dart';
 
 void main() {
   runApp(const MyApp());
@@ -214,6 +212,13 @@ class _RandomWordsState extends State<RandomWords> {
             icon: const Icon(Icons.list_rounded),
             tooltip: "Saved suggestions",
           ),
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/second',
+                    arguments:
+                        PassedArgs(nome: "", id: repository.words.length + 1));
+              },
+              icon: const Icon(Icons.add_circle_outline))
         ],
       ),
       body: bady(),
@@ -302,15 +307,15 @@ class _EditScreenState extends State<EditScreen> {
               backgroundColor: const Color.fromARGB(255, 70, 2, 61),
             ),
             onPressed: onSubmit,
-            child: const Text('Submit', style: TextStyle(fontSize: 20)),
+            child: const Text('Editar', style: TextStyle(fontSize: 20)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 70, 2, 61),
             ),
             onPressed: addWord,
-            child: const Text('Adicione a palavra',
-                style: TextStyle(fontSize: 20)),
+            child:
+                const Text('Adicionar palavra', style: TextStyle(fontSize: 20)),
           ),
         ],
       ),
